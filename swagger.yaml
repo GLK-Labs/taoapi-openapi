@@ -92,6 +92,96 @@ openapi: 3.1.0
 paths:
   /api/v1/event-stakes:
     get:
+      description: Retrieve event stake records filtered by the provided conditions.
+      parameters:
+      - description: API key.
+        in: header
+        name: glk_api
+        required: true
+        schema:
+          default: glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f
+          type: string
+      - description: Filter by action.
+        in: query
+        name: action
+        schema:
+          enum:
+          - DELEGATE
+          - UNDELEGATE
+          type: string
+      - description: Exact block number to match.
+        in: query
+        name: blockNumber
+        schema:
+          type: integer
+      - description: Match a delegate by either hex or SS58 representation, e.g. 5GKH9FPPnWSUoeeTJp
+          or 0xbc0e6b70124.
+        in: query
+        name: delegate
+        schema:
+          type: string
+      - description: Match a nominator by either hex or SS58 representation, e.g.
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124.
+        in: query
+        name: nominator
+        schema:
+          type: string
+      - description: 'RFC3339 inclusive lower bound (format: 2006-01-02T15:04:05Z07:00,
+          e.g. 2025-01-01T00:00:00Z).'
+        in: query
+        name: timestampFrom
+        schema:
+          type: string
+      - description: 'RFC3339 inclusive upper bound (format: 2006-01-02T15:04:05Z07:00,
+          e.g. 2025-01-31T23:59:59Z).'
+        in: query
+        name: timestampTo
+        schema:
+          type: string
+      - description: Filter by network ID.
+        in: query
+        name: netuid
+        schema:
+          default: 1
+          type: integer
+      - description: Filter by extrinsic hash.
+        in: query
+        name: extrinsicHash
+        schema:
+          type: string
+      - description: Page index, starting from 1.
+        in: query
+        name: page
+        schema:
+          default: 1
+          type: integer
+      - description: Page size, default is 20.
+        in: query
+        name: pageSize
+        schema:
+          default: 20
+          type: integer
+      - description: Primary field to sort by.
+        in: query
+        name: orderField
+        schema:
+          enum:
+          - timestamp
+          - blockNumber
+          type: string
+      - description: Sort direction.
+        in: query
+        name: orderType
+        schema:
+          enum:
+          - asc
+          - desc
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
           content:
@@ -117,6 +207,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
           description: Internal Server Error
+      summary: Query event stake records
+      tags:
+      - event_stake
 servers:
 - description: Tao api server.
   url: https://taoapi.chillybot.xyz
