@@ -1,0 +1,206 @@
+components:
+  schemas:
+    github_com_GLK-Labs_taoapi_model.EventStake:
+      properties:
+        action:
+          type: string
+        alpha:
+          type: number
+        alphaPriceInTao:
+          type: number
+        alphaPriceInUsd:
+          type: number
+        amount:
+          type: number
+        blockNumber:
+          type: integer
+        delegateHex:
+          type: string
+        delegateSs58:
+          type: string
+        eventId:
+          type: integer
+        extrinsicHash:
+          type: string
+        extrinsicId:
+          type: integer
+        fee:
+          type: number
+        netuid:
+          type: integer
+        nominatorHex:
+          type: string
+        nominatorSs58:
+          type: string
+        timestamp:
+          type: string
+        usd:
+          type: number
+      type: object
+    handler.APIErrorResponse:
+      properties:
+        code:
+          type: integer
+        data:
+          $ref: '#/components/schemas/handler.ValidationFailed'
+        message:
+          type: string
+      type: object
+    handler.EventStakeQueryAPIResponse:
+      properties:
+        code:
+          type: integer
+        data:
+          $ref: '#/components/schemas/handler.EventStakeQueryResponse'
+        message:
+          type: string
+      type: object
+    handler.EventStakeQueryResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/github_com_GLK-Labs_taoapi_model.EventStake'
+          type: array
+          uniqueItems: false
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+      type: object
+    handler.ValidationFailed:
+      properties:
+        message:
+          type: string
+      type: object
+  securitySchemes:
+    ApiKeyAuth:
+      in: header
+      name: glk_api
+      type: apiKey
+externalDocs:
+  description: ""
+  url: ""
+info:
+  description: TaoAPI HTTP service.
+  title: TaoAPI
+  version: "1.0"
+openapi: 3.1.0
+paths:
+  /api/v1/event-stakes:
+    get:
+      description: Retrieve event stake records filtered by the provided conditions.
+      parameters:
+      - description: API key
+        in: header
+        name: glk_api
+        required: true
+        schema:
+          type: string
+      - description: Filter by action.
+        in: query
+        name: action
+        schema:
+          type: string
+      - description: Exact block number to match.
+        in: query
+        name: blockNumber
+        schema:
+          type: integer
+      - description: Match a delegate by either hex or SS58 representation.
+        in: query
+        name: delegate
+        schema:
+          type: string
+      - description: Match a nominator by either hex or SS58 representation.
+        in: query
+        name: nominator
+        schema:
+          type: string
+      - description: ISO8601 timestamp inclusive lower bound.
+        in: query
+        name: timestampFrom
+        schema:
+          type: string
+      - description: ISO8601 timestamp inclusive upper bound.
+        in: query
+        name: timestampTo
+        schema:
+          type: string
+      - description: Filter by network ID.
+        in: query
+        name: netuid
+        schema:
+          type: integer
+      - description: Filter by extrinsic hash.
+        in: query
+        name: extrinsicHash
+        schema:
+          type: string
+      - description: Page index, starting from 1.
+        in: query
+        name: page
+        schema:
+          type: integer
+      - description: Page size, default is 20.
+        in: query
+        name: pageSize
+        schema:
+          type: integer
+      - description: Primary field to sort by.
+        in: query
+        name: orderField
+        schema:
+          enum:
+          - timestamp
+          - blockNumber
+          type: string
+      - description: Sort direction.
+        in: query
+        name: orderType
+        schema:
+          enum:
+          - asc
+          - desc
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.EventStakeQueryAPIResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Unauthorized
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Internal Server Error
+      security:
+      - ApiKeyAuth: []
+      summary: Query event stake records
+      tags:
+      - event_stake
+servers:
+- description: Tao api server.
+  url: https://taoapi.chillybot.xyz
