@@ -3,56 +3,78 @@ components:
     github_com_GLK-Labs_taoapi_model.EventStake:
       properties:
         action:
+          example: DELEGATE
           type: string
         alpha:
+          example: 12.345678
           type: number
         alphaPriceInTao:
+          example: 0.456789123
           type: number
         alphaPriceInUsd:
+          example: 178.23
           type: number
         amount:
+          example: 25
           type: number
         blockNumber:
+          example: 5023411
           type: integer
         delegateHex:
+          example: "0xbc0e6b70124"
           type: string
         delegateSs58:
+          example: 5GKH9FPPnWSUoeeTJp
           type: string
         eventId:
+          example: 1001
           type: integer
         extrinsicHash:
+          example: 0x8f84ca9b49a1f9d8a4f6d9f6d6fdbbc8b0b5c760c8a0d1122334455667788990
           type: string
         extrinsicId:
+          example: 7
           type: integer
         fee:
+          example: 0.012345
           type: number
         netuid:
+          example: 1
           type: integer
         nominatorHex:
+          example: "0xbc0e6b70124"
           type: string
         nominatorSs58:
+          example: 5GKH9FPPnWSUoeeTJp
           type: string
         timestamp:
+          example: "2025-01-15T12:34:56Z"
+          format: date-time
           type: string
         usd:
+          example: 345.67
           type: number
       type: object
     handler.APIErrorResponse:
       properties:
         code:
+          example: 400
           type: integer
         data:
           $ref: '#/components/schemas/handler.ValidationFailed'
         message:
+          example: invalid request data
           type: string
       type: object
     handler.EventStakeQueryAPIResponse:
       properties:
         code:
+          example: 200
           type: integer
         data:
           $ref: '#/components/schemas/handler.EventStakeQueryResponse'
         message:
+          example: success
           type: string
       type: object
     handler.EventStakeQueryResponse:
@@ -63,17 +85,22 @@ components:
           type: array
           uniqueItems: false
         page:
+          example: 1
           type: integer
         pageSize:
+          example: 20
           type: integer
         total:
+          example: 1250
           type: integer
         totalPages:
+          example: 63
           type: integer
       type: object
     handler.ValidationFailed:
       properties:
         message:
+          example: invalid timestampFrom
           type: string
       type: object
   securitySchemes:
@@ -92,16 +119,24 @@ openapi: 3.1.0
 paths:
   /api/v1/event-stakes:
     get:
-      description: Retrieve event stake records filtered by the provided conditions.
+      description: 'Use this endpoint to query event-stake records for analytics and
+        reconciliation use cases. Optional query filters are combined with AND semantics,
+        so each additional parameter narrows the result set. Results are sorted by
+        `orderField` and `orderType` (default: `timestamp desc`) and returned in 1-based
+        pages. `timestampFrom` and `timestampTo` must be RFC3339 timestamps and are
+        applied as inclusive time boundaries.'
+      operationId: getEventStakesV1
       parameters:
-      - description: API key.
+      - description: 'Required. API key used for authentication. Example key format:
+          glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f.'
         in: header
         name: glk_api
         required: true
         schema:
           default: glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f
           type: string
-      - description: Filter by action.
+      - description: Optional. Stake action filter.
+        example: DELEGATE
         in: query
         name: action
         schema:
@@ -109,105 +144,119 @@ paths:
           - DELEGATE
           - UNDELEGATE
           type: string
-      - description: Exact block number to match.
+      - description: Optional. Exact chain block number to match.
+        example: 5023411
         in: query
         name: blockNumber
         schema:
           type: integer
-      - description: Match a delegate by either hex or SS58 representation, e.g. 5GKH9FPPnWSUoeeTJp
-          or 0xbc0e6b70124.
+      - description: 'Optional. Delegate address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: 5GKH9FPPnWSUoeeTJp
         in: query
         name: delegate
         schema:
           type: string
-      - description: Match a nominator by either hex or SS58 representation, e.g.
-          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124.
+      - description: 'Optional. Nominator address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: "0xbc0e6b70124"
         in: query
         name: nominator
         schema:
           type: string
-      - description: 'RFC3339 inclusive lower bound (format: 2006-01-02T15:04:05Z07:00,
-          e.g. 2025-01-01T00:00:00Z).'
+      - description: Optional. Inclusive lower time boundary in RFC3339 format (2006-01-02T15:04:05Z07:00).
+        example: "2025-01-01T00:00:00Z"
         in: query
         name: timestampFrom
         schema:
           type: string
-      - description: 'RFC3339 inclusive upper bound (format: 2006-01-02T15:04:05Z07:00,
-          e.g. 2025-01-31T23:59:59Z).'
+      - description: Optional. Inclusive upper time boundary in RFC3339 format (2006-01-02T15:04:05Z07:00).
+        example: "2025-01-31T23:59:59Z"
         in: query
         name: timestampTo
         schema:
           type: string
-      - description: Filter by network ID.
+      - description: Optional. Subnet/network identifier.
+        example: 1
         in: query
         name: netuid
         schema:
           default: 1
           type: integer
-      - description: Filter by extrinsic hash.
+      - description: Optional. Exact extrinsic hash filter.
+        example: 0x8f84ca9b49a1f9d8a4f6d9f6d6fdbbc8b0b5c760c8a0d1122334455667788990
         in: query
         name: extrinsicHash
         schema:
           type: string
-      - description: Page index, starting from 1.
+      - description: Optional. 1-based page index.
+        example: 1
         in: query
         name: page
         schema:
           default: 1
+          minimum: 1
           type: integer
-      - description: Page size, default is 20.
+      - description: Optional. Number of records per page (recommended 20-100).
+        example: 20
         in: query
         name: pageSize
         schema:
           default: 20
+          maximum: 200
+          minimum: 1
           type: integer
-      - description: Primary field to sort by.
+      - description: Optional. Primary sort field.
+        example: timestamp
         in: query
         name: orderField
         schema:
+          default: timestamp
           enum:
           - timestamp
           - blockNumber
           type: string
-      - description: Sort direction.
+      - description: Optional. Sort direction.
+        example: desc
         in: query
         name: orderType
         schema:
+          default: desc
           enum:
           - asc
           - desc
           type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.EventStakeQueryAPIResponse'
-          description: OK
+          description: Successfully returns a filtered, sorted, paginated event-stake
+            list.
         "400":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Bad Request
+          description: Invalid request parameters, such as non-numeric values, unsupported
+            enum values, invalid RFC3339 timestamps, or pagination values outside
+            allowed bounds.
         "401":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Unauthorized
+          description: Authentication failed because `glk_api` is missing or invalid.
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Internal Server Error
-      summary: Query event stake records
+          description: Internal server error while validating input or querying storage.
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve paginated event-stake records with composable filters
       tags:
       - event_stake
 servers:
