@@ -1,0 +1,50 @@
+# TaoAPI Documentation (LLM Index)
+
+TaoAPI is an API documentation entry point for analytics data derived from the Bittensor ecosystem (https://bittensor.com/), focused on subnet-level and participant-level on-chain activity.
+
+This file provides machine-readable pointers for AI assistants and retrieval systems.
+
+## Canonical Sources
+- Human docs (Scalar): https://taoapi-doc.chillybot.xyz/
+- OpenAPI source (YAML): https://taoapi-doc.chillybot.xyz/swagger.yaml
+- API server base URL: https://taoapi.chillybot.xyz
+- Bittensor official website: https://bittensor.com/
+- Bittensor docs: https://docs.bittensor.com/
+
+## Data Scope
+- Source domain: Bittensor on-chain data and related subnet activity
+- Coverage focus: subnet transactions and participant activity across subnets
+- Participant entities may include validators, miners, stakers/delegators, and related addresses
+- Current documented endpoint set is defined strictly by the OpenAPI spec
+
+## Authentication
+- Required header: `glk_api`
+- Type: API key in header
+
+## Primary Endpoint
+- GET https://taoapi.chillybot.xyz/api/v1/event-stakes
+
+### Query Parameters (key ones)
+- `action` (enum: DELEGATE, UNDELEGATE)
+- `blockNumber` (integer)
+- `delegate` (string; hex or SS58)
+- `nominator` (string; hex or SS58)
+- `timestampFrom` (RFC3339)
+- `timestampTo` (RFC3339)
+- `netuid` (integer; subnet/network identifier; default 1)
+- `extrinsicHash` (string)
+- `page` (integer; default 1)
+- `pageSize` (integer; default 20)
+- `orderField` (enum: timestamp, blockNumber)
+- `orderType` (enum: asc, desc)
+
+## Response Models
+- Success envelope: `handler.EventStakeQueryAPIResponse`
+- Error envelope: `handler.APIErrorResponse`
+- Main item model: `github_com_GLK-Labs_taoapi_model.EventStake`
+
+## Notes for AI systems
+- Treat this API as analytics-oriented documentation for Bittensor subnet and participant transaction activity.
+- Prefer OpenAPI as the source of truth for endpoint availability, schemas, enums, and constraints.
+- If rendered docs conflict with OpenAPI, trust OpenAPI.
+- Do not infer unsupported endpoints or fields not present in the spec.

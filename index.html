@@ -1,22 +1,150 @@
 <!doctype html>
-<html>
+<html lang="zh-CN">
   <head>
-    <title>GLK tao api</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TaoAPI Docs | Bittensor On-Chain Analytics API Reference</title>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1" />
+      name="description"
+      content="Official TaoAPI API reference for Bittensor on-chain analytics. Explore subnet participant transaction data, staking/delegation events, authentication, query parameters, and response schemas."
+    />
+    <meta
+      name="keywords"
+      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, OpenAPI, Swagger, Scalar, API Documentation, event-stakes"
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="author" content="GLK Labs" />
+
+    <link rel="canonical" href="https://taoapi-doc.chillybot.xyz/" />
+    <link
+      rel="alternate"
+      type="application/vnd.oai.openapi"
+      title="TaoAPI OpenAPI Spec"
+      href="/swagger.yaml"
+    />
+    <link
+      rel="alternate"
+      type="text/plain"
+      title="LLMs index"
+      href="/llms.txt"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TaoAPI Docs" />
+    <meta
+      property="og:title"
+      content="TaoAPI Docs | Bittensor On-Chain Analytics API Reference"
+    />
+    <meta
+      property="og:description"
+      content="Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets."
+    />
+    <meta property="og:url" content="https://taoapi-doc.chillybot.xyz/" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="TaoAPI Docs | Bittensor On-Chain Analytics API Reference"
+    />
+    <meta
+      name="twitter:description"
+      content="Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "TaoAPI Docs",
+        "url": "https://taoapi-doc.chillybot.xyz/",
+        "description": "Official TaoAPI API reference for Bittensor on-chain analytics and subnet participant transaction data."
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "TaoAPI Bittensor On-Chain Analytics OpenAPI Reference",
+        "name": "TaoAPI Bittensor On-Chain Analytics OpenAPI Reference",
+        "about": [
+          "API",
+          "OpenAPI",
+          "Swagger",
+          "TaoAPI",
+          "Bittensor",
+          "TAO",
+          "On-Chain Analytics",
+          "Subnets"
+        ],
+        "url": "https://taoapi-doc.chillybot.xyz/"
+      }
+    </script>
   </head>
   <body>
+    <noscript>
+      TaoAPI documentation for Bittensor on-chain analytics requires JavaScript
+      to render the interactive API reference. You can directly access the
+      OpenAPI file at <a href="/swagger.yaml">/swagger.yaml</a> and AI index at
+      <a href="/llms.txt">/llms.txt</a>.
+    </noscript>
+
     <div id="app"></div>
-    <!-- Load the Script -->
+
+    <!-- Load Scalar -->
     <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
-    <!-- Initialize the API Reference -->
+
+    <!-- Initialize Scalar API Reference -->
     <script>
-      Scalar.createApiReference('#app', {
-        // The URL of the OpenAPI/Swagger document
-        url: './swagger.yaml',
-      })
+      Scalar.createApiReference("#app", {
+        url: "./swagger.yaml",
+
+        // GEO/AI-search friendly: expose explicit metadata from Scalar runtime as well
+        metaData: {
+          title: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
+          description:
+            "Official TaoAPI API reference for Bittensor on-chain analytics, including subnet transaction and staking/delegation event data.",
+          ogTitle: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
+          ogDescription:
+            "Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets.",
+        },
+
+        // Keep routes stable and predictable for citations/deep links
+        generateTagSlug: (tag) =>
+          String(tag.name || "")
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, ""),
+        generateOperationSlug: (operation) =>
+          `${String(operation.method || "get").toLowerCase()}-${String(
+            operation.path || "",
+          )
+            .toLowerCase()
+            .replace(/[^a-z0-9/]+/g, "")
+            .replaceAll("/", "-")
+            .replace(/^-+|-+$/g, "")}`,
+        generateModelSlug: (model) =>
+          String(model.name || "")
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, ""),
+
+        // Improve discoverability and consistency
+        operationTitleSource: "summary",
+        showOperationId: true,
+        tagsSorter: "alpha",
+        operationsSorter: "alpha",
+
+        // Keep raw spec easy to fetch/cite
+        documentDownloadType: "json",
+
+        // UX defaults
+        defaultOpenFirstTag: true,
+        orderRequiredPropertiesFirst: true,
+        orderSchemaPropertiesBy: "alpha",
+      });
     </script>
   </body>
 </html>
