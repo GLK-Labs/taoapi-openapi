@@ -167,7 +167,7 @@ externalDocs:
   description: ""
   url: ""
 info:
-  description: TaoAPI HTTP service.
+  description: TaoAPI HTTP service.<br/><br/><b>Default API key (testing)</b><br/><b>glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f</b>
   title: TaoAPI
   version: "1.0"
 openapi: 3.1.0
@@ -182,14 +182,6 @@ paths:
         applied as inclusive time boundaries.'
       operationId: getEventStakesV1
       parameters:
-      - description: 'Required. API key used for authentication. Example key format:
-          glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f.'
-        in: header
-        name: glk_api
-        required: true
-        schema:
-          default: glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f
-          type: string
       - description: Optional. Stake action filter.
         example: DELEGATE
         in: query
@@ -313,23 +305,18 @@ paths:
       - ApiKeyAuth: []
       summary: Retrieve paginated event-stake records with composable filters
       tags:
-      - event_stake
-  /api/v1/stake-info:
+      - event-stake
+  /api/v1/stake-infos:
     get:
       description: Returns the latest stake positions for the provided cold key address.
         The `coldKey` parameter accepts either SS58 or 0x-prefixed 32-byte hex public
         key format. Returned `hotKey` and `coldKey` are normalized to SS58 strings.
         The response includes an aggregated `totalStakeByNetuid` map where stake values
         are summed by `netuid` across all hotkeys. This endpoint is intended for real-time
-        balance lookup.
-      operationId: getStakeInfoByColdKeyV1
+        balance lookup. For Scalar testing, set `glk_api` in the Authentication panel
+        to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.
+      operationId: getStakeInfosV1
       parameters:
-      - description: Required. API key used for authentication.
-        in: header
-        name: glk_api
-        required: true
-        schema:
-          type: string
       - description: Required. Cold key in SS58 or 0x-prefixed 32-byte hex public
           key format.
         example: 5GgMXDVL3ZSnUhWzZuySXWSuBemDCCHNiLwx8RXpkKj6TkRi
@@ -369,7 +356,7 @@ paths:
       - ApiKeyAuth: []
       summary: Retrieve real-time stake balances for a cold key
       tags:
-      - stake_info
+      - stake-info
 servers:
 - description: Tao api server.
   url: https://taoapi.chillybot.xyz
