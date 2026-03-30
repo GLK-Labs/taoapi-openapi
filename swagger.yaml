@@ -97,6 +97,61 @@ components:
           example: 63
           type: integer
       type: object
+    handler.StakeInfoItemResponse:
+      properties:
+        coldKey:
+          example: 5CAmuDVkYuLPS62vVdsyKc4riMGkFQonCVcXggWsHjaTPgch
+          type: string
+        drain:
+          example: 0
+          type: integer
+        emission:
+          example: "1347654931"
+          type: string
+        hotKey:
+          example: 5CsvRJXuR955WojnGMdok1hbhffZyB4N5ocrv82f3p5A2zVp
+          type: string
+        isRegistered:
+          example: false
+          type: boolean
+        locked:
+          example: 0
+          type: integer
+        netuid:
+          example: 10
+          type: integer
+        stake:
+          example: "298254694577"
+          type: string
+        taoEmission:
+          example: "0"
+          type: string
+      type: object
+    handler.StakeInfoQueryAPIResponse:
+      properties:
+        code:
+          example: 200
+          type: integer
+        data:
+          $ref: '#/components/schemas/handler.StakeInfoQueryResponse'
+        message:
+          example: success
+          type: string
+      type: object
+    handler.StakeInfoQueryResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/handler.StakeInfoItemResponse'
+          type: array
+          uniqueItems: false
+        totalStakeByNetuid:
+          additionalProperties:
+            type: string
+          example:
+            '{"10"': '"298254694577"}'
+          type: object
+      type: object
     handler.ValidationFailed:
       properties:
         message:
@@ -259,6 +314,62 @@ paths:
       summary: Retrieve paginated event-stake records with composable filters
       tags:
       - event_stake
+  /api/v1/stake-info:
+    get:
+      description: Returns the latest stake positions for the provided cold key address.
+        The `coldKey` parameter accepts either SS58 or 0x-prefixed 32-byte hex public
+        key format. Returned `hotKey` and `coldKey` are normalized to SS58 strings.
+        The response includes an aggregated `totalStakeByNetuid` map where stake values
+        are summed by `netuid` across all hotkeys. This endpoint is intended for real-time
+        balance lookup.
+      operationId: getStakeInfoByColdKeyV1
+      parameters:
+      - description: Required. API key used for authentication.
+        in: header
+        name: glk_api
+        required: true
+        schema:
+          type: string
+      - description: Required. Cold key in SS58 or 0x-prefixed 32-byte hex public
+          key format.
+        example: 5GgMXDVL3ZSnUhWzZuySXWSuBemDCCHNiLwx8RXpkKj6TkRi
+        in: query
+        name: coldKey
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.StakeInfoQueryAPIResponse'
+          description: Successfully returns stake positions and per-netuid total stake.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Invalid request parameters, such as missing `coldKey` or malformed
+            SS58/hex cold key.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Authentication failed because `glk_api` is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Internal server error while calling runtime API or decoding
+            runtime response.
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve real-time stake balances for a cold key
+      tags:
+      - stake_info
 servers:
 - description: Tao api server.
   url: https://taoapi.chillybot.xyz
