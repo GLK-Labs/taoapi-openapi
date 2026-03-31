@@ -106,7 +106,7 @@ components:
           example: 0
           type: integer
         emission:
-          example: "1347654931"
+          example: "1.347654931"
           type: string
         hotKey:
           example: 5CsvRJXuR955WojnGMdok1hbhffZyB4N5ocrv82f3p5A2zVp
@@ -121,10 +121,10 @@ components:
           example: 10
           type: integer
         stake:
-          example: "298254694577"
+          example: "298.254694577"
           type: string
         taoEmission:
-          example: "0"
+          example: "0.000000000"
           type: string
       type: object
     handler.StakeInfoQueryAPIResponse:
@@ -149,7 +149,7 @@ components:
           additionalProperties:
             type: string
           example:
-            '{"10"': '"298254694577"}'
+            '{"10"': '"298.254694577"}'
           type: object
       type: object
     handler.ValidationFailed:
