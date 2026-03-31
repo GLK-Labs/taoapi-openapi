@@ -20,6 +20,34 @@ This repo hosts the static documentation assets for TaoAPI:
 
 ---
 
+## API overview
+
+### Authentication
+
+All endpoints require API key authentication via request header:
+
+- Header: `glk_api`
+
+### Endpoints
+
+1. `GET /api/v1/event-stakes`
+- Purpose: Query event-stake records with composable filters for analytics and reconciliation.
+- Supports filtering by action, block number, delegate/nominator, timestamp range, netuid, and extrinsic hash.
+- Supports pagination and sorting (`page`, `pageSize`, `orderField`, `orderType`).
+
+2. `GET /api/v1/stake-infos`
+- Purpose: Retrieve latest real-time stake positions for a single `coldKey`.
+- Input: required `coldKey` (SS58 or 0x-prefixed 32-byte hex).
+- Output: stake entries plus `totalStakeByNetuid` aggregate map.
+
+### Response envelopes
+
+- Success (`event-stakes`): `handler.EventStakeQueryAPIResponse`
+- Success (`stake-infos`): `handler.StakeInfoQueryAPIResponse`
+- Error (shared): `handler.APIErrorResponse`
+
+---
+
 ## Data scope (TaoAPI context)
 
 TaoAPI is designed for analytics use cases over Bittensor ecosystem activity, including:
@@ -27,6 +55,7 @@ TaoAPI is designed for analytics use cases over Bittensor ecosystem activity, in
 - subnet-related activity
 - participant activity (e.g., validator/miner/staker/delegator linked events)
 - transaction/event query workflows (e.g., staking/delegation event queries)
+- cold-key stake position snapshots and netuid-level totals
 
 > Note: Exact endpoint availability and field semantics are defined by `swagger.yaml`.
 
@@ -70,10 +99,10 @@ This repository is intended for static hosting (for example, Cloudflare Pages).
 
 Recommended outputs:
 
-- `/` → Scalar docs entry (`index.html`)
-- `/swagger.yaml` → OpenAPI spec
-- `/llms.txt` → AI index
-- `/README.md` → human + AI-readable repo overview
+- `/` -> Scalar docs entry (`index.html`)
+- `/swagger.yaml` -> OpenAPI spec
+- `/llms.txt` -> AI index
+- `/README.md` -> human + AI-readable repo overview
 
 ---
 
@@ -84,10 +113,11 @@ When updating API docs quality:
 - Keep operation descriptions concise and unambiguous.
 - Keep examples realistic.
 - Keep `operationId` stable.
-- Avoid changing endpoint behavior from this repo (spec/UI only unless coordinated with backend).
+- Keep response schemas backward-compatible where possible.
+- Avoid changing backend behavior from this repo (spec/UI only unless coordinated with backend).
 
 ---
-  
+
 ## License
 
 See repository license file for terms.

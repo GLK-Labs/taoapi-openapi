@@ -11,7 +11,7 @@
     />
     <meta
       name="keywords"
-      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, OpenAPI, Swagger, Scalar, API Documentation, event-stakes"
+      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, OpenAPI, Swagger, Scalar, API Documentation, event-stakes, stake-infos"
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="author" content="GLK Labs" />
@@ -55,29 +55,106 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "TaoAPI Docs",
+        "@type": "Organization",
+        "name": "GLK Labs",
         "url": "https://taoapi-doc.chillybot.xyz/",
-        "description": "Official TaoAPI API reference for Bittensor on-chain analytics and subnet participant transaction data."
+        "brand": "TaoAPI",
+        "sameAs": [
+          "https://bittensor.com/",
+          "https://docs.bittensor.com/"
+        ]
       }
     </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "TechArticle",
-        "headline": "TaoAPI Bittensor On-Chain Analytics OpenAPI Reference",
-        "name": "TaoAPI Bittensor On-Chain Analytics OpenAPI Reference",
-        "about": [
-          "API",
-          "OpenAPI",
-          "Swagger",
-          "TaoAPI",
-          "Bittensor",
-          "TAO",
-          "On-Chain Analytics",
-          "Subnets"
-        ],
-        "url": "https://taoapi-doc.chillybot.xyz/"
+        "@type": "WebSite",
+        "name": "TaoAPI Docs",
+        "url": "https://taoapi-doc.chillybot.xyz/",
+        "description": "Official TaoAPI API reference for Bittensor on-chain analytics and subnet participant transaction data.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "GLK Labs"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebAPI",
+        "name": "TaoAPI",
+        "documentation": "https://taoapi-doc.chillybot.xyz/",
+        "provider": {
+          "@type": "Organization",
+          "name": "GLK Labs"
+        },
+        "audience": {
+          "@type": "Audience",
+          "audienceType": "Developers, analysts, and AI systems"
+        },
+        "url": "https://taoapi.chillybot.xyz",
+        "potentialAction": [
+          {
+            "@type": "EntryPoint",
+            "name": "OpenAPI Specification",
+            "urlTemplate": "https://taoapi-doc.chillybot.xyz/swagger.yaml"
+          },
+          {
+            "@type": "EntryPoint",
+            "name": "LLMs Index",
+            "urlTemplate": "https://taoapi-doc.chillybot.xyz/llms.txt"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://taoapi-doc.chillybot.xyz/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "OpenAPI",
+            "item": "https://taoapi-doc.chillybot.xyz/swagger.yaml"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "LLMs Index",
+            "item": "https://taoapi-doc.chillybot.xyz/llms.txt"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I authenticate TaoAPI requests?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Set the glk_api header in every request."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which endpoints are available?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use GET /api/v1/event-stakes for filtered event-stake records and GET /api/v1/stake-infos for cold-key stake positions."
+            }
+          }
+        ]
       }
     </script>
   </head>
@@ -91,15 +168,12 @@
 
     <div id="app"></div>
 
-    <!-- Load Scalar -->
     <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
 
-    <!-- Initialize Scalar API Reference -->
     <script>
       Scalar.createApiReference("#app", {
         url: "./swagger.yaml",
 
-        // GEO/AI-search friendly: expose explicit metadata from Scalar runtime as well
         metaData: {
           title: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
           description:
@@ -109,7 +183,6 @@
             "Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets.",
         },
 
-        // Keep routes stable and predictable for citations/deep links
         generateTagSlug: (tag) =>
           String(tag.name || "")
             .trim()
@@ -131,16 +204,11 @@
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-+|-+$/g, ""),
 
-        // Improve discoverability and consistency
         operationTitleSource: "summary",
         showOperationId: true,
         tagsSorter: "alpha",
         operationsSorter: "alpha",
-
-        // Keep raw spec easy to fetch/cite
         documentDownloadType: "json",
-
-        // UX defaults
         defaultOpenFirstTag: true,
         orderRequiredPropertiesFirst: true,
         orderSchemaPropertiesBy: "alpha",

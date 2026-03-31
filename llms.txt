@@ -21,27 +21,34 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - Required header: `glk_api`
 - Type: API key in header
 
-## Primary Endpoint
+## Primary Endpoints
 - GET https://taoapi.chillybot.xyz/api/v1/event-stakes
+- GET https://taoapi.chillybot.xyz/api/v1/stake-infos
 
-### Query Parameters (key ones)
+### `/api/v1/event-stakes` query parameters (key ones)
 - `action` (enum: DELEGATE, UNDELEGATE)
 - `blockNumber` (integer)
 - `delegate` (string; hex or SS58)
 - `nominator` (string; hex or SS58)
-- `timestampFrom` (RFC3339)
-- `timestampTo` (RFC3339)
+- `timestampFrom` (RFC3339, inclusive)
+- `timestampTo` (RFC3339, inclusive)
 - `netuid` (integer; subnet/network identifier; default 1)
 - `extrinsicHash` (string)
 - `page` (integer; default 1)
-- `pageSize` (integer; default 20)
-- `orderField` (enum: timestamp, blockNumber)
-- `orderType` (enum: asc, desc)
+- `pageSize` (integer; default 20, max 200)
+- `orderField` (enum: timestamp, blockNumber; default timestamp)
+- `orderType` (enum: asc, desc; default desc)
+
+### `/api/v1/stake-infos` query parameters
+- `coldKey` (string; required; SS58 or 0x-prefixed 32-byte hex)
 
 ## Response Models
-- Success envelope: `handler.EventStakeQueryAPIResponse`
-- Error envelope: `handler.APIErrorResponse`
-- Main item model: `github_com_GLK-Labs_taoapi_model.EventStake`
+- Shared error envelope: `handler.APIErrorResponse`
+- `/api/v1/event-stakes` success envelope: `handler.EventStakeQueryAPIResponse`
+- `/api/v1/event-stakes` item model: `github_com_GLK-Labs_taoapi_model.EventStake`
+- `/api/v1/stake-infos` success envelope: `handler.StakeInfoQueryAPIResponse`
+- `/api/v1/stake-infos` item model: `handler.StakeInfoItemResponse`
+- `/api/v1/stake-infos` aggregate map: `totalStakeByNetuid` (object<string,string>)
 
 ## Notes for AI systems
 - Treat this API as analytics-oriented documentation for Bittensor subnet and participant transaction activity.
