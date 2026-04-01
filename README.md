@@ -36,14 +36,20 @@ All endpoints require API key authentication via request header:
 - Supports pagination and sorting (`page`, `pageSize`, `orderField`, `orderType`).
 
 2. `GET /api/v1/stake-infos`
-- Purpose: Retrieve latest real-time stake positions for a single `coldKey`.
+- Purpose: Retrieve latest real-time stake positions and total value for a single `coldKey`.
 - Input: required `coldKey` (SS58 or 0x-prefixed 32-byte hex).
-- Output: stake entries plus `totalStakeByNetuid` aggregate map.
+- Output: `stakePositions`, `totalStakeByNetuid`, and `totalStakeValueTao`.
+
+3. `GET /api/v1/subnet-prices`
+- Purpose: Retrieve real-time subnet prices from in-memory cache.
+- Input: optional repeated `netuid` query params; optional `block` (reserved, currently unsupported).
+- Output: map of `netuid -> price` (alpha/Tao).
 
 ### Response envelopes
 
 - Success (`event-stakes`): `handler.EventStakeQueryAPIResponse`
 - Success (`stake-infos`): `handler.StakeInfoQueryAPIResponse`
+- Success (`subnet-prices`): `handler.SubnetPriceQueryAPIResponse`
 - Error (shared): `handler.APIErrorResponse`
 
 ---
@@ -52,10 +58,10 @@ All endpoints require API key authentication via request header:
 
 TaoAPI is designed for analytics use cases over Bittensor ecosystem activity, including:
 
-- subnet-related activity
+- subnet-related activity and price observations
 - participant activity (e.g., validator/miner/staker/delegator linked events)
 - transaction/event query workflows (e.g., staking/delegation event queries)
-- cold-key stake position snapshots and netuid-level totals
+- cold-key stake position snapshots, netuid-level totals, and total value in Tao
 
 > Note: Exact endpoint availability and field semantics are defined by `swagger.yaml`.
 
@@ -81,7 +87,7 @@ For AI systems and downstream tools:
 
 You can open `index.html` directly in a browser, or serve this directory as static files.
 
-Minimal static serve example:
+Minimal static serve examples:
 
 ```sh
 python3 -m http.server 8080

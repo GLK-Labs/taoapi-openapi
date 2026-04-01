@@ -13,7 +13,7 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 
 ## Data Scope
 - Source domain: Bittensor on-chain data and related subnet activity
-- Coverage focus: subnet transactions and participant activity across subnets
+- Coverage focus: subnet transactions, stake positions, and subnet price analytics
 - Participant entities may include validators, miners, stakers/delegators, and related addresses
 - Current documented endpoint set is defined strictly by the OpenAPI spec
 
@@ -24,6 +24,7 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 ## Primary Endpoints
 - GET https://taoapi.chillybot.xyz/api/v1/event-stakes
 - GET https://taoapi.chillybot.xyz/api/v1/stake-infos
+- GET https://taoapi.chillybot.xyz/api/v1/subnet-prices
 
 ### `/api/v1/event-stakes` query parameters (key ones)
 - `action` (enum: DELEGATE, UNDELEGATE)
@@ -42,13 +43,20 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 ### `/api/v1/stake-infos` query parameters
 - `coldKey` (string; required; SS58 or 0x-prefixed 32-byte hex)
 
+### `/api/v1/subnet-prices` query parameters
+- `netuid` (array<integer>; optional; repeated query params supported, e.g. `?netuid=1&netuid=81`)
+- `block` (string; optional; reserved for future historical lookup, currently unsupported)
+
 ## Response Models
 - Shared error envelope: `handler.APIErrorResponse`
 - `/api/v1/event-stakes` success envelope: `handler.EventStakeQueryAPIResponse`
-- `/api/v1/event-stakes` item model: `github_com_GLK-Labs_taoapi_model.EventStake`
+- `/api/v1/event-stakes` item model: `handler.EventStake`
 - `/api/v1/stake-infos` success envelope: `handler.StakeInfoQueryAPIResponse`
-- `/api/v1/stake-infos` item model: `handler.StakeInfoItemResponse`
+- `/api/v1/stake-infos` positions field: `stakePositions` (`handler.StakeInfoItemResponse[]`)
 - `/api/v1/stake-infos` aggregate map: `totalStakeByNetuid` (object<string,string>)
+- `/api/v1/stake-infos` total value field: `totalStakeValueTao` (string)
+- `/api/v1/subnet-prices` success envelope: `handler.SubnetPriceQueryAPIResponse`
+- `/api/v1/subnet-prices` data field: object<string,string> (price unit: alpha/Tao)
 
 ## Notes for AI systems
 - Treat this API as analytics-oriented documentation for Bittensor subnet and participant transaction activity.

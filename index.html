@@ -7,11 +7,11 @@
     <title>TaoAPI Docs | Bittensor On-Chain Analytics API Reference</title>
     <meta
       name="description"
-      content="Official TaoAPI API reference for Bittensor on-chain analytics. Explore subnet participant transaction data, staking/delegation events, authentication, query parameters, and response schemas."
+      content="Official TaoAPI API reference for Bittensor on-chain analytics. Explore event-stakes, stake-infos, and subnet-prices endpoints, authentication, query parameters, and response schemas."
     />
     <meta
       name="keywords"
-      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, OpenAPI, Swagger, Scalar, API Documentation, event-stakes, stake-infos"
+      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, subnet prices, OpenAPI, Swagger, Scalar, API Documentation, event-stakes, stake-infos, subnet-prices"
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="author" content="GLK Labs" />
@@ -38,7 +38,7 @@
     />
     <meta
       property="og:description"
-      content="Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets."
+      content="Official TaoAPI reference for Bittensor event-stakes, cold-key stake balances with Tao value, and subnet price analytics."
     />
     <meta property="og:url" content="https://taoapi-doc.chillybot.xyz/" />
 
@@ -49,7 +49,7 @@
     />
     <meta
       name="twitter:description"
-      content="Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets."
+      content="Official TaoAPI reference for Bittensor event-stakes, cold-key stake balances with Tao value, and subnet price analytics."
     />
 
     <script type="application/ld+json">
@@ -71,7 +71,7 @@
         "@type": "WebSite",
         "name": "TaoAPI Docs",
         "url": "https://taoapi-doc.chillybot.xyz/",
-        "description": "Official TaoAPI API reference for Bittensor on-chain analytics and subnet participant transaction data.",
+        "description": "Official TaoAPI API reference for Bittensor event-stake records, cold-key stake positions with Tao value, and subnet prices.",
         "publisher": {
           "@type": "Organization",
           "name": "GLK Labs"
@@ -93,7 +93,23 @@
           "audienceType": "Developers, analysts, and AI systems"
         },
         "url": "https://taoapi.chillybot.xyz",
+        "description": "Bittensor analytics API exposing event-stakes, stake-infos, and subnet-prices endpoints.",
         "potentialAction": [
+          {
+            "@type": "EntryPoint",
+            "name": "Event Stakes Endpoint",
+            "urlTemplate": "https://taoapi.chillybot.xyz/api/v1/event-stakes"
+          },
+          {
+            "@type": "EntryPoint",
+            "name": "Stake Infos Endpoint",
+            "urlTemplate": "https://taoapi.chillybot.xyz/api/v1/stake-infos"
+          },
+          {
+            "@type": "EntryPoint",
+            "name": "Subnet Prices Endpoint",
+            "urlTemplate": "https://taoapi.chillybot.xyz/api/v1/subnet-prices"
+          },
           {
             "@type": "EntryPoint",
             "name": "OpenAPI Specification",
@@ -151,7 +167,15 @@
             "name": "Which endpoints are available?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use GET /api/v1/event-stakes for filtered event-stake records and GET /api/v1/stake-infos for cold-key stake positions."
+              "text": "Use GET /api/v1/event-stakes, GET /api/v1/stake-infos, and GET /api/v1/subnet-prices."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does stake-infos return?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It returns stakePositions, totalStakeByNetuid, and totalStakeValueTao for a coldKey."
             }
           }
         ]
@@ -177,10 +201,10 @@
         metaData: {
           title: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
           description:
-            "Official TaoAPI API reference for Bittensor on-chain analytics, including subnet transaction and staking/delegation event data.",
+            "Official TaoAPI API reference for Bittensor analytics, including event-stakes, stake-infos (with total Tao value), and subnet-prices endpoints.",
           ogTitle: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
           ogDescription:
-            "Official TaoAPI reference for Bittensor on-chain transaction and staking analytics across subnets.",
+            "Official TaoAPI reference for Bittensor event-stakes, cold-key stake balances with Tao value, and subnet price analytics.",
         },
 
         generateTagSlug: (tag) =>
