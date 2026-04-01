@@ -140,7 +140,7 @@ components:
       type: object
     handler.StakeInfoQueryResponse:
       properties:
-        items:
+        stakePositions:
           items:
             $ref: '#/components/schemas/handler.StakeInfoItemResponse'
           type: array
@@ -151,6 +151,9 @@ components:
           example:
             '{"10"': '"298.254694577"}'
           type: object
+        totalStakeValueTao:
+          example: "1790.253849128"
+          type: string
       type: object
     handler.SubnetPriceQueryAPIResponse:
       properties:
@@ -324,13 +327,14 @@ paths:
       - event-stake
   /api/v1/stake-infos:
     get:
-      description: Returns the latest stake positions for the provided cold key address.
+      description: 'Returns the latest stake positions for the provided cold key address.
         The `coldKey` parameter accepts either SS58 or 0x-prefixed 32-byte hex public
         key format. Returned `hotKey` and `coldKey` are normalized to SS58 strings.
-        The response includes an aggregated `totalStakeByNetuid` map where stake values
-        are summed by `netuid` across all hotkeys. This endpoint is intended for real-time
-        balance lookup. For Scalar testing, set `glk_api` in the Authentication panel
-        to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.
+        The response includes `stakePositions` (holding positions array), an aggregated
+        `totalStakeByNetuid` map where stake values are summed by `netuid` across
+        all hotkeys, and `totalStakeValueTao` (unit: Tao), computed from each netuid
+        total stake and current subnet price (alpha/Tao) from in-memory subnet price
+        cache. For Scalar testing, set `glk_api` in the Authentication panel to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.'
       operationId: getStakeInfosV1
       parameters:
       - description: Required. Cold key in SS58 or 0x-prefixed 32-byte hex public
@@ -347,7 +351,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.StakeInfoQueryAPIResponse'
-          description: Successfully returns stake positions and per-netuid total stake.
+          description: Successfully returns stake positions, per-netuid total stake,
+            and total value in Tao.
         "400":
           content:
             application/json:
@@ -366,11 +371,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Internal server error while calling runtime API or decoding
-            runtime response.
+          description: Internal server error while calling runtime API, decoding response,
+            or computing total value.
       security:
       - ApiKeyAuth: []
-      summary: Retrieve real-time stake balances for a cold key
+      summary: Retrieve real-time stake balances and Tao value for a cold key
       tags:
       - stake-info
   /api/v1/subnet-prices:
@@ -380,8 +385,8 @@ paths:
         `?netuid=1&netuid=81`). If `netuid` is omitted, all subnet prices are returned.
         `block` is a reserved field for future historical lookup (supports block hash
         or block number in future), but currently unsupported. Returned price values
-        are decimal strings scaled by 1e9 (shift -9). For Scalar testing, set `glk_api`
-        in the Authentication panel to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.
+        are decimal strings scaled by 1e9 (shift -9), and the price unit is alpha/Tao.
+        For Scalar testing, set `glk_api` in the Authentication panel to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.
       operationId: getSubnetPricesV1
       parameters:
       - description: Optional. Subnet identifiers. Supports repeated query params.
@@ -396,7 +401,6 @@ paths:
         style: form
       - description: Optional. Reserved for future historical lookup (block hash or
           block number). Currently unsupported.
-        example: 0x837d0139704f9e06eba086ecd5fe3a405414ae3ecf27349a8c8ce3191d61c6c0
         in: query
         name: block
         schema:
@@ -407,7 +411,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.SubnetPriceQueryAPIResponse'
-          description: Successfully returns subnet prices from cache.
+          description: Successfully returns subnet prices (alpha/Tao) from cache.
         "400":
           content:
             application/json:
