@@ -152,6 +152,22 @@ components:
             '{"10"': '"298.254694577"}'
           type: object
       type: object
+    handler.SubnetPriceQueryAPIResponse:
+      properties:
+        code:
+          example: 200
+          type: integer
+        data:
+          additionalProperties:
+            type: string
+          example:
+            '"81"': '"0.026072371"}'
+            '{"1"': '"0.013317795"'
+          type: object
+        message:
+          example: success
+          type: string
+      type: object
     handler.ValidationFailed:
       properties:
         message:
@@ -357,6 +373,78 @@ paths:
       summary: Retrieve real-time stake balances for a cold key
       tags:
       - stake-info
+  /api/v1/subnet-prices:
+    get:
+      description: Returns cached real-time subnet prices maintained by a background
+        block-listener service. You can pass `netuid` as repeated query params (e.g.
+        `?netuid=1&netuid=81`). If `netuid` is omitted, all subnet prices are returned.
+        `block` is a reserved field for future historical lookup (supports block hash
+        or block number in future), but currently unsupported. Returned price values
+        are decimal strings scaled by 1e9 (shift -9). For Scalar testing, set `glk_api`
+        in the Authentication panel to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.
+      operationId: getSubnetPricesV1
+      parameters:
+      - description: Optional. Subnet identifiers. Supports repeated query params.
+          If omitted, returns all subnet prices.
+        example: 1
+        in: query
+        name: netuid
+        schema:
+          items:
+            type: integer
+          type: array
+        style: form
+      - description: Optional. Reserved for future historical lookup (block hash or
+          block number). Currently unsupported.
+        example: 0x837d0139704f9e06eba086ecd5fe3a405414ae3ecf27349a8c8ce3191d61c6c0
+        in: query
+        name: block
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.SubnetPriceQueryAPIResponse'
+          description: Successfully returns subnet prices from cache.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Invalid request parameters, such as malformed `netuid` items,
+            or unsupported `block` value (historical query is not supported yet).
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Authentication failed because `glk_api` is missing or invalid.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: One or more requested `netuid` values were not found in current
+            cache.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Internal server error while querying cache.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Service temporarily unavailable.
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve real-time subnet price(s) from in-memory cache
+      tags:
+      - subnet-price
 servers:
 - description: Tao api server.
   url: https://taoapi.chillybot.xyz
