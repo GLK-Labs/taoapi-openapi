@@ -619,7 +619,54 @@ paths:
       - event-transfer-stake
   /api/v1/event-transfers:
     get:
+      description: 'Use this endpoint to query transfer events for analytics and reconciliation
+        use cases. At least one filter must be provided (`to`, `from`, `network`,
+        `blockNumber`, `timestampFrom`, `timestampTo`, or `extrinsicHash`). When multiple
+        filters are provided, they are combined with AND semantics to narrow the result
+        set. Address filters `to` and `from` accept either SS58 or hex format. Results
+        are sorted by `orderField` and `orderType` (default: `timestamp desc`) and
+        returned in 1-based pages. `timestampFrom` and `timestampTo` are inclusive
+        RFC3339 boundaries.'
+      operationId: getEventTransfersV1
       parameters:
+      - description: 'Optional. Receiver address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: 5GKH9FPPnWSUoeeTJp
+        in: query
+        name: to
+        schema:
+          type: string
+      - description: 'Optional. Sender address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: "0xbc0e6b70124"
+        in: query
+        name: from
+        schema:
+          type: string
+      - description: Optional. Exact network filter.
+        example: finney
+        in: query
+        name: network
+        schema:
+          type: string
+      - description: Optional. Exact chain block number to match.
+        example: 5023411
+        in: query
+        name: blockNumber
+        schema:
+          type: integer
+      - description: Optional. Inclusive lower time boundary in RFC3339 format (2006-01-02T15:04:05Z07:00).
+        example: "2025-01-01T00:00:00Z"
+        in: query
+        name: timestampFrom
+        schema:
+          type: string
+      - description: Optional. Inclusive upper time boundary in RFC3339 format (2006-01-02T15:04:05Z07:00).
+        example: "2025-01-31T23:59:59Z"
+        in: query
+        name: timestampTo
+        schema:
+          type: string
       - description: Optional. Exact extrinsic hash filter.
         example: 0x8f84ca9b49a1f9d8a4f6d9f6d6fdbbc8b0b5c760c8a0d1122334455667788990
         in: query
@@ -693,6 +740,9 @@ paths:
           description: Internal server error while validating input or querying storage.
       security:
       - ApiKeyAuth: []
+      summary: Retrieve paginated event-transfer records with composable filters
+      tags:
+      - event-transfer
   /api/v1/stake-infos:
     get:
       description: 'Returns the latest stake positions for the provided cold key address.
