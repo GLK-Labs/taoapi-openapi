@@ -79,11 +79,77 @@ components:
       type: object
     handler.EventStakeQueryResponse:
       properties:
-        items:
+        page:
+          example: 1
+          type: integer
+        pageSize:
+          example: 20
+          type: integer
+        stakeEvents:
           items:
             $ref: '#/components/schemas/handler.EventStake'
           type: array
           uniqueItems: false
+        total:
+          example: 1250
+          type: integer
+        totalPages:
+          example: 63
+          type: integer
+      type: object
+    handler.EventTransfer:
+      properties:
+        amount:
+          example: 25
+          type: number
+        blockNumber:
+          example: 5023411
+          type: integer
+        eventId:
+          example: 1001
+          type: integer
+        extrinsicHash:
+          example: 0x8f84ca9b49a1f9d8a4f6d9f6d6fdbbc8b0b5c760c8a0d1122334455667788990
+          type: string
+        extrinsicId:
+          example: 7
+          type: integer
+        fee:
+          example: 0.012345
+          type: number
+        fromHex:
+          example: "0xbc0e6b70124"
+          type: string
+        fromSs58:
+          example: 5GKH9FPPnWSUoeeTJp
+          type: string
+        network:
+          example: finney
+          type: string
+        timestamp:
+          example: "2025-01-15T12:34:56Z"
+          format: date-time
+          type: string
+        toHex:
+          example: "0xbc0e6b70124"
+          type: string
+        toSs58:
+          example: 5GKH9FPPnWSUoeeTJp
+          type: string
+      type: object
+    handler.EventTransferQueryAPIResponse:
+      properties:
+        code:
+          example: 200
+          type: integer
+        data:
+          $ref: '#/components/schemas/handler.EventTransferQueryResponse'
+        message:
+          example: success
+          type: string
+      type: object
+    handler.EventTransferQueryResponse:
+      properties:
         page:
           example: 1
           type: integer
@@ -96,6 +162,88 @@ components:
         totalPages:
           example: 63
           type: integer
+        transferEvents:
+          items:
+            $ref: '#/components/schemas/handler.EventTransfer'
+          type: array
+          uniqueItems: false
+      type: object
+    handler.EventTransferStake:
+      properties:
+        amount:
+          example: 25
+          type: number
+        blockNumber:
+          example: 5023411
+          type: integer
+        delegateHex:
+          example: "0xbc0e6b70124"
+          type: string
+        delegateSs58:
+          example: 5GKH9FPPnWSUoeeTJp
+          type: string
+        eventId:
+          example: 1001
+          type: integer
+        extrinsicHash:
+          example: "0x8f84ca9b49a1f9"
+          type: string
+        extrinsicId:
+          example: 7
+          type: integer
+        fromHex:
+          example: "0xbc0e6b70124"
+          type: string
+        fromNetuid:
+          example: 1
+          type: integer
+        fromSs58:
+          example: 5GKH9FPPnWSUoeeTJp
+          type: string
+        timestamp:
+          example: "2025-01-15T12:34:56Z"
+          format: date-time
+          type: string
+        toHex:
+          example: "0xbc0e6b70124"
+          type: string
+        toNetuid:
+          example: 11
+          type: integer
+        toSs58:
+          example: 5GKH9FPPnWSUoeeTJp
+          type: string
+      type: object
+    handler.EventTransferStakeQueryAPIResponse:
+      properties:
+        code:
+          example: 200
+          type: integer
+        data:
+          $ref: '#/components/schemas/handler.EventTransferStakeQueryResponse'
+        message:
+          example: success
+          type: string
+      type: object
+    handler.EventTransferStakeQueryResponse:
+      properties:
+        page:
+          example: 1
+          type: integer
+        pageSize:
+          example: 20
+          type: integer
+        total:
+          example: 1250
+          type: integer
+        totalPages:
+          example: 63
+          type: integer
+        transferStakeEvents:
+          items:
+            $ref: '#/components/schemas/handler.EventTransferStake'
+          type: array
+          uniqueItems: false
       type: object
     handler.StakeInfoItemResponse:
       properties:
@@ -195,11 +343,12 @@ paths:
   /api/v1/event-stakes:
     get:
       description: 'Use this endpoint to query event-stake records for analytics and
-        reconciliation use cases. Optional query filters are combined with AND semantics,
-        so each additional parameter narrows the result set. Results are sorted by
-        `orderField` and `orderType` (default: `timestamp desc`) and returned in 1-based
-        pages. `timestampFrom` and `timestampTo` must be RFC3339 timestamps and are
-        applied as inclusive time boundaries.'
+        reconciliation use cases. At least one filter must be provided (`action`,
+        `blockNumber`, `delegate`, `nominator`, `timestampFrom`, `timestampTo`, `netuid`,
+        or `extrinsicHash`). When multiple filters are provided, they are combined
+        with AND semantics to narrow the result set. Results are sorted by `orderField`
+        and `orderType` (default: `timestamp desc`) and returned in 1-based pages.
+        `timestampFrom` and `timestampTo` are inclusive RFC3339 boundaries.'
       operationId: getEventStakesV1
       parameters:
       - description: Optional. Stake action filter.
@@ -306,9 +455,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Invalid request parameters, such as non-numeric values, unsupported
-            enum values, invalid RFC3339 timestamps, or pagination values outside
-            allowed bounds.
+          description: Invalid request parameters, such as missing required filters,
+            non-numeric values, unsupported enum values, invalid RFC3339 timestamps,
+            or pagination values outside allowed bounds.
         "401":
           content:
             application/json:
@@ -326,16 +475,232 @@ paths:
       summary: Retrieve paginated event-stake records with composable filters
       tags:
       - event-stake
+  /api/v1/event-transfer-stakes:
+    get:
+      description: 'Use this endpoint to query event-transfer-stake records. At least
+        one filter must be provided (`to`, `from`, `delegate`, `fromNetuid`, `toNetuid`,
+        `blockNumber`, `timestampFrom`, `timestampTo`, or `extrinsicHash`). Address
+        fields (`to`, `from`, `delegate`) accept either SS58 or hex format and are
+        matched automatically. Results are sorted by `orderField` and `orderType`
+        (default: `timestamp desc`) and returned in 1-based pages. `timestampFrom`
+        and `timestampTo` are inclusive RFC3339 boundaries.'
+      operationId: getEventTransferStakesV1
+      parameters:
+      - description: 'Optional. Receiver address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: 5GKH9FPPnWSUoeeTJp
+        in: query
+        name: to
+        schema:
+          type: string
+      - description: 'Optional. Sender address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: "0xbc0e6b70124"
+        in: query
+        name: from
+        schema:
+          type: string
+      - description: 'Optional. Delegate address in SS58 or hex format (for example:
+          5GKH9FPPnWSUoeeTJp or 0xbc0e6b70124).'
+        example: 5GKH9FPPnWSUoeeTJp
+        in: query
+        name: delegate
+        schema:
+          type: string
+      - description: Optional. Source subnet/network identifier.
+        example: 1
+        in: query
+        name: fromNetuid
+        schema:
+          minimum: 0
+          type: integer
+      - description: Optional. Destination subnet/network identifier.
+        example: 11
+        in: query
+        name: toNetuid
+        schema:
+          minimum: 0
+          type: integer
+      - description: Optional. Exact chain block number to match.
+        example: 5023411
+        in: query
+        name: blockNumber
+        schema:
+          type: integer
+      - description: Optional. Inclusive lower time boundary in RFC3339 format (2006-01-02T15:04:05Z07:00).
+        example: "2025-01-01T00:00:00Z"
+        in: query
+        name: timestampFrom
+        schema:
+          type: string
+      - description: Optional. Inclusive upper time boundary in RFC3339 format (2006-01-02T15:04:05Z07:00).
+        example: "2025-01-31T23:59:59Z"
+        in: query
+        name: timestampTo
+        schema:
+          type: string
+      - description: Optional. Exact extrinsic hash filter.
+        example: 0x8f84ca9b49a1f9d8a4f6d9f6d6fdbbc8b0b5c760c8a0d1122334455667788990
+        in: query
+        name: extrinsicHash
+        schema:
+          type: string
+      - description: Optional. 1-based page index.
+        example: 1
+        in: query
+        name: page
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Optional. Number of records per page (recommended 20-100).
+        example: 20
+        in: query
+        name: pageSize
+        schema:
+          default: 20
+          maximum: 200
+          minimum: 1
+          type: integer
+      - description: Optional. Primary sort field.
+        example: timestamp
+        in: query
+        name: orderField
+        schema:
+          default: timestamp
+          enum:
+          - timestamp
+          - blockNumber
+          type: string
+      - description: Optional. Sort direction.
+        example: desc
+        in: query
+        name: orderType
+        schema:
+          default: desc
+          enum:
+          - asc
+          - desc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.EventTransferStakeQueryAPIResponse'
+          description: Successfully returns a filtered, sorted, paginated event-transfer-stake
+            list.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Invalid request parameters, such as missing all filters (at
+            least one of `to`, `from`, `delegate`, `fromNetuid`, `toNetuid`, `blockNumber`,
+            `timestampFrom`, `timestampTo`, `extrinsicHash` is required), unsupported
+            enum values, invalid RFC3339 timestamps, or pagination values outside
+            allowed bounds.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Authentication failed because `glk_api` is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Internal server error while validating input or querying storage.
+      security:
+      - ApiKeyAuth: []
+      summary: Retrieve paginated event-transfer-stake records with composable filters
+      tags:
+      - event-transfer-stake
+  /api/v1/event-transfers:
+    get:
+      parameters:
+      - description: Optional. Exact extrinsic hash filter.
+        example: 0x8f84ca9b49a1f9d8a4f6d9f6d6fdbbc8b0b5c760c8a0d1122334455667788990
+        in: query
+        name: extrinsicHash
+        schema:
+          type: string
+      - description: Optional. 1-based page index.
+        example: 1
+        in: query
+        name: page
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Optional. Number of records per page (recommended 20-100).
+        example: 20
+        in: query
+        name: pageSize
+        schema:
+          default: 20
+          maximum: 200
+          minimum: 1
+          type: integer
+      - description: Optional. Primary sort field.
+        example: timestamp
+        in: query
+        name: orderField
+        schema:
+          default: timestamp
+          enum:
+          - timestamp
+          - blockNumber
+          type: string
+      - description: Optional. Sort direction.
+        example: desc
+        in: query
+        name: orderType
+        schema:
+          default: desc
+          enum:
+          - asc
+          - desc
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.EventTransferQueryAPIResponse'
+          description: Successfully returns a filtered, sorted, paginated event-transfer
+            list.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Invalid request parameters, such as missing required filters,
+            non-numeric values, invalid RFC3339 timestamps, unsupported enum values,
+            or pagination values outside allowed bounds.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Authentication failed because `glk_api` is missing or invalid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/handler.APIErrorResponse'
+          description: Internal server error while validating input or querying storage.
+      security:
+      - ApiKeyAuth: []
   /api/v1/stake-infos:
     get:
       description: 'Returns the latest stake positions for the provided cold key address.
         The `coldKey` parameter accepts either SS58 or 0x-prefixed 32-byte hex public
         key format. Returned `hotKey` and `coldKey` are normalized to SS58 strings.
-        The response includes `stakePositions` (holding positions array), an aggregated
-        `totalStakeByNetuid` map where stake values are summed by `netuid` across
-        all hotkeys, and `totalStakeValueTao` (unit: Tao), computed from each netuid
-        total stake and current subnet price (alpha/Tao) from in-memory subnet price
-        cache. For Scalar testing, set `glk_api` in the Authentication panel to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.'
+        The response includes `stakePositions`, an aggregated `totalStakeByNetuid`
+        map where stake values are summed by `netuid` across all hotkeys, and `totalStakeValueTao`
+        (unit: Tao).'
       operationId: getStakeInfosV1
       parameters:
       - description: Required. Cold key in SS58 or 0x-prefixed 32-byte hex public
@@ -372,8 +737,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Internal server error while calling runtime API, decoding response,
-            or computing total value.
+          description: Internal server error while processing the request.
       security:
       - ApiKeyAuth: []
       summary: Retrieve real-time stake balances and Tao value for a cold key
@@ -381,13 +745,11 @@ paths:
       - stake-info
   /api/v1/subnet-prices:
     get:
-      description: Returns cached real-time subnet prices maintained by a background
-        block-listener service. You can pass `netuid` as repeated query params (e.g.
-        `?netuid=1&netuid=81`). If `netuid` is omitted, all subnet prices are returned.
-        `block` is a reserved field for future historical lookup (supports block hash
-        or block number in future), but currently unsupported. Returned price values
-        are decimal strings scaled by 1e9 (shift -9), and the price unit is alpha/Tao.
-        For Scalar testing, set `glk_api` in the Authentication panel to `glk-test-019d2a1c-5bc0-7171-bad9-5867c08a188f`.
+      description: Returns current subnet prices in alpha/Tao. You can pass `netuid`
+        as repeated query params (e.g. `?netuid=1&netuid=81`); if `netuid` is omitted,
+        all available subnet prices are returned. `block` is reserved for future historical
+        lookup and is currently unsupported. Returned price values are decimal strings
+        scaled by 1e9 (shift -9).
       operationId: getSubnetPricesV1
       parameters:
       - description: Optional. Subnet identifiers. Supports repeated query params.
@@ -412,7 +774,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.SubnetPriceQueryAPIResponse'
-          description: Successfully returns subnet prices (alpha/Tao) from cache.
+          description: Successfully returns current subnet prices (alpha/Tao).
         "400":
           content:
             application/json:
@@ -438,7 +800,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.APIErrorResponse'
-          description: Internal server error while querying cache.
+          description: Internal server error while processing the request.
         "503":
           content:
             application/json:
@@ -447,7 +809,7 @@ paths:
           description: Service temporarily unavailable.
       security:
       - ApiKeyAuth: []
-      summary: Retrieve real-time subnet price(s) from in-memory cache
+      summary: Retrieve current subnet price(s)
       tags:
       - subnet-price
 servers:
