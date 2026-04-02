@@ -13,7 +13,7 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 
 ## Data Scope
 - Source domain: Bittensor on-chain data and related subnet activity
-- Coverage focus: subnet transactions, stake positions, and subnet price analytics
+- Coverage focus: event-stake, transfer-stake, transfer, stake positions, and subnet price analytics
 - Participant entities may include validators, miners, stakers/delegators, and related addresses
 - Current documented endpoint set is defined strictly by the OpenAPI spec
 
@@ -23,6 +23,8 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 
 ## Primary Endpoints
 - GET https://taoapi.chillybot.xyz/api/v1/event-stakes
+- GET https://taoapi.chillybot.xyz/api/v1/event-transfer-stakes
+- GET https://taoapi.chillybot.xyz/api/v1/event-transfers
 - GET https://taoapi.chillybot.xyz/api/v1/stake-infos
 - GET https://taoapi.chillybot.xyz/api/v1/subnet-prices
 
@@ -40,6 +42,34 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - `orderField` (enum: timestamp, blockNumber; default timestamp)
 - `orderType` (enum: asc, desc; default desc)
 
+### `/api/v1/event-transfer-stakes` query parameters (key ones)
+- `to` (string; hex or SS58)
+- `from` (string; hex or SS58)
+- `delegate` (string; hex or SS58)
+- `fromNetuid` (integer; minimum 0)
+- `toNetuid` (integer; minimum 0)
+- `blockNumber` (integer)
+- `timestampFrom` (RFC3339, inclusive)
+- `timestampTo` (RFC3339, inclusive)
+- `extrinsicHash` (string)
+- `page` (integer; default 1)
+- `pageSize` (integer; default 20, max 200)
+- `orderField` (enum: timestamp, blockNumber; default timestamp)
+- `orderType` (enum: asc, desc; default desc)
+
+### `/api/v1/event-transfers` query parameters (key ones)
+- `to` (string; hex or SS58)
+- `from` (string; hex or SS58)
+- `network` (string)
+- `blockNumber` (integer)
+- `timestampFrom` (RFC3339, inclusive)
+- `timestampTo` (RFC3339, inclusive)
+- `extrinsicHash` (string)
+- `page` (integer; default 1)
+- `pageSize` (integer; default 20, max 200)
+- `orderField` (enum: timestamp, blockNumber; default timestamp)
+- `orderType` (enum: asc, desc; default desc)
+
 ### `/api/v1/stake-infos` query parameters
 - `coldKey` (string; required; SS58 or 0x-prefixed 32-byte hex)
 
@@ -51,6 +81,10 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - Shared error envelope: `handler.APIErrorResponse`
 - `/api/v1/event-stakes` success envelope: `handler.EventStakeQueryAPIResponse`
 - `/api/v1/event-stakes` item model: `handler.EventStake`
+- `/api/v1/event-transfer-stakes` success envelope: `handler.EventTransferStakeQueryAPIResponse`
+- `/api/v1/event-transfer-stakes` item model: `handler.EventTransferStake`
+- `/api/v1/event-transfers` success envelope: `handler.EventTransferQueryAPIResponse`
+- `/api/v1/event-transfers` item model: `handler.EventTransfer`
 - `/api/v1/stake-infos` success envelope: `handler.StakeInfoQueryAPIResponse`
 - `/api/v1/stake-infos` positions field: `stakePositions` (`handler.StakeInfoItemResponse[]`)
 - `/api/v1/stake-infos` aggregate map: `totalStakeByNetuid` (object<string,string>)

@@ -35,19 +35,31 @@ All endpoints require API key authentication via request header:
 - Supports filtering by action, block number, delegate/nominator, timestamp range, netuid, and extrinsic hash.
 - Supports pagination and sorting (`page`, `pageSize`, `orderField`, `orderType`).
 
-2. `GET /api/v1/stake-infos`
+2. `GET /api/v1/event-transfer-stakes`
+- Purpose: Query transfer-stake events across source/destination subnet contexts.
+- Supports filtering by sender/receiver/delegate, `fromNetuid`, `toNetuid`, block number, timestamp range, and extrinsic hash.
+- Supports pagination and sorting (`page`, `pageSize`, `orderField`, `orderType`).
+
+3. `GET /api/v1/event-transfers`
+- Purpose: Query transfer events for chain-level movement analytics and reconciliation.
+- Supports filtering by sender/receiver, network, block number, timestamp range, and extrinsic hash.
+- Supports pagination and sorting (`page`, `pageSize`, `orderField`, `orderType`).
+
+4. `GET /api/v1/stake-infos`
 - Purpose: Retrieve latest real-time stake positions and total value for a single `coldKey`.
 - Input: required `coldKey` (SS58 or 0x-prefixed 32-byte hex).
 - Output: `stakePositions`, `totalStakeByNetuid`, and `totalStakeValueTao`.
 
-3. `GET /api/v1/subnet-prices`
-- Purpose: Retrieve real-time subnet prices from in-memory cache.
+5. `GET /api/v1/subnet-prices`
+- Purpose: Retrieve current subnet prices in alpha/Tao.
 - Input: optional repeated `netuid` query params; optional `block` (reserved, currently unsupported).
-- Output: map of `netuid -> price` (alpha/Tao).
+- Output: map of `netuid -> price`.
 
 ### Response envelopes
 
 - Success (`event-stakes`): `handler.EventStakeQueryAPIResponse`
+- Success (`event-transfer-stakes`): `handler.EventTransferStakeQueryAPIResponse`
+- Success (`event-transfers`): `handler.EventTransferQueryAPIResponse`
 - Success (`stake-infos`): `handler.StakeInfoQueryAPIResponse`
 - Success (`subnet-prices`): `handler.SubnetPriceQueryAPIResponse`
 - Error (shared): `handler.APIErrorResponse`
@@ -60,7 +72,7 @@ TaoAPI is designed for analytics use cases over Bittensor ecosystem activity, in
 
 - subnet-related activity and price observations
 - participant activity (e.g., validator/miner/staker/delegator linked events)
-- transaction/event query workflows (e.g., staking/delegation event queries)
+- transaction/event query workflows (e.g., staking, transfer-stake, transfer event queries)
 - cold-key stake position snapshots, netuid-level totals, and total value in Tao
 
 > Note: Exact endpoint availability and field semantics are defined by `swagger.yaml`.
