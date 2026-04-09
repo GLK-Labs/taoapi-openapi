@@ -864,4 +864,4 @@ paths:
       - subnet-price
 servers:
 - description: Tao api server.
-  url: https://taoapi.chillybot.xyz
+  url: https://api.taotree.xyz
