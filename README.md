@@ -2,9 +2,9 @@
 
 Official OpenAPI/Scalar documentation for **TaoAPI**, an API service focused on **Bittensor on-chain analytics** (subnet and participant transaction activity).
 
-- Live docs: https://taoapi-doc.chillybot.xyz/
-- OpenAPI source: https://taoapi-doc.chillybot.xyz/swagger.yaml
-- API server: https://taoapi.chillybot.xyz
+- Live docs: https://doc.taotree.xyz/
+- OpenAPI source: https://doc.taotree.xyz/swagger.yaml
+- API server: https://api.taotree.xyz
 - Bittensor official: https://bittensor.com/
 - Bittensor docs: https://docs.bittensor.com/
 

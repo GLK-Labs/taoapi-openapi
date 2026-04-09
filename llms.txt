@@ -5,9 +5,9 @@ TaoAPI is an API documentation entry point for analytics data derived from the B
 This file provides machine-readable pointers for AI assistants and retrieval systems.
 
 ## Canonical Sources
-- Human docs (Scalar): https://taoapi-doc.chillybot.xyz/
-- OpenAPI source (YAML): https://taoapi-doc.chillybot.xyz/swagger.yaml
-- API server base URL: https://taoapi.chillybot.xyz
+- Human docs (Scalar): https://doc.taotree.xyz/
+- OpenAPI source (YAML): https://doc.taotree.xyz/swagger.yaml
+- API server base URL: https://api.taotree.xyz
 - Bittensor official website: https://bittensor.com/
 - Bittensor docs: https://docs.bittensor.com/
 
@@ -22,11 +22,11 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - Type: API key in header
 
 ## Primary Endpoints
-- GET https://taoapi.chillybot.xyz/api/v1/event-stakes
-- GET https://taoapi.chillybot.xyz/api/v1/event-transfer-stakes
-- GET https://taoapi.chillybot.xyz/api/v1/event-transfers
-- GET https://taoapi.chillybot.xyz/api/v1/stake-infos
-- GET https://taoapi.chillybot.xyz/api/v1/subnet-prices
+- GET https://api.taotree.xyz/api/v1/event-stakes
+- GET https://api.taotree.xyz/api/v1/event-transfer-stakes
+- GET https://api.taotree.xyz/api/v1/event-transfers
+- GET https://api.taotree.xyz/api/v1/stake-infos
+- GET https://api.taotree.xyz/api/v1/subnet-prices
 
 ### `/api/v1/event-stakes` query parameters (key ones)
 - `action` (enum: DELEGATE, UNDELEGATE)
