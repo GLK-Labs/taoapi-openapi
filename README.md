@@ -55,6 +55,11 @@ All endpoints require API key authentication via request header:
 - Input: optional repeated `netuid` query params; optional `block` (reserved, currently unsupported).
 - Output: map of `netuid -> price`.
 
+6. `GET /api/v1/tao-balance`
+- Purpose: Retrieve total, available, and staking Tao balance for a single account.
+- Input: required `address` (SS58, 0x-prefixed 32-byte hex, or raw 32-byte public key).
+- Output: `totalBalance`, `availableBalance`, and `stakingBalance` (all decimal strings in Tao units).
+
 ### Response envelopes
 
 - Success (`event-stakes`): `handler.EventStakeQueryAPIResponse`
@@ -62,6 +67,7 @@ All endpoints require API key authentication via request header:
 - Success (`event-transfers`): `handler.EventTransferQueryAPIResponse`
 - Success (`stake-infos`): `handler.StakeInfoQueryAPIResponse`
 - Success (`subnet-prices`): `handler.SubnetPriceQueryAPIResponse`
+- Success (`tao-balance`): `handler.TaoBalanceQueryAPIResponse`
 - Error (shared): `handler.APIErrorResponse`
 
 ---
@@ -74,6 +80,7 @@ TaoAPI is designed for analytics use cases over Bittensor ecosystem activity, in
 - participant activity (e.g., validator/miner/staker/delegator linked events)
 - transaction/event query workflows (e.g., staking, transfer-stake, transfer event queries)
 - cold-key stake position snapshots, netuid-level totals, and total value in Tao
+- account-level Tao balance views (total, available, and staking components)
 
 > Note: Exact endpoint availability and field semantics are defined by `swagger.yaml`.
 

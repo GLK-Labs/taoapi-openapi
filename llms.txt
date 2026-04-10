@@ -27,6 +27,7 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - GET https://api.taotree.xyz/api/v1/event-transfers
 - GET https://api.taotree.xyz/api/v1/stake-infos
 - GET https://api.taotree.xyz/api/v1/subnet-prices
+- GET https://api.taotree.xyz/api/v1/tao-balance
 
 ### `/api/v1/event-stakes` query parameters (key ones)
 - `action` (enum: DELEGATE, UNDELEGATE)
@@ -77,6 +78,9 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - `netuid` (array<integer>; optional; repeated query params supported, e.g. `?netuid=1&netuid=81`)
 - `block` (string; optional; reserved for future historical lookup, currently unsupported)
 
+### `/api/v1/tao-balance` query parameters
+- `address` (string; required; SS58, 0x-prefixed 32-byte hex public key, or raw 32-byte public key)
+
 ## Response Models
 - Shared error envelope: `handler.APIErrorResponse`
 - `/api/v1/event-stakes` success envelope: `handler.EventStakeQueryAPIResponse`
@@ -91,6 +95,8 @@ This file provides machine-readable pointers for AI assistants and retrieval sys
 - `/api/v1/stake-infos` total value field: `totalStakeValueTao` (string)
 - `/api/v1/subnet-prices` success envelope: `handler.SubnetPriceQueryAPIResponse`
 - `/api/v1/subnet-prices` data field: object<string,string> (price unit: alpha/Tao)
+- `/api/v1/tao-balance` success envelope: `handler.TaoBalanceQueryAPIResponse`
+- `/api/v1/tao-balance` data fields: `totalBalance`, `availableBalance`, `stakingBalance` (all string, Tao units)
 
 ## Notes for AI systems
 - Treat this API as analytics-oriented documentation for Bittensor subnet and participant transaction activity.

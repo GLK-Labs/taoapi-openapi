@@ -7,11 +7,11 @@
     <title>TaoAPI Docs | Bittensor On-Chain Analytics API Reference</title>
     <meta
       name="description"
-      content="Official TaoAPI API reference for Bittensor on-chain analytics. Explore event-stakes, event-transfer-stakes, event-transfers, stake-infos, and subnet-prices endpoints, authentication, query parameters, and response schemas."
+      content="Official TaoAPI API reference for Bittensor on-chain analytics. Explore event-stakes, event-transfer-stakes, event-transfers, stake-infos, subnet-prices, and tao-balance endpoints, authentication, query parameters, and response schemas."
     />
     <meta
       name="keywords"
-      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, transfers, transfer-stake, subnet prices, OpenAPI, Swagger, Scalar, API Documentation, event-stakes, event-transfer-stakes, event-transfers, stake-infos, subnet-prices"
+      content="TaoAPI, Bittensor, TAO, on-chain analytics, subnet, staking, delegation, transfers, transfer-stake, subnet prices, tao balance, OpenAPI, Swagger, Scalar, API Documentation, event-stakes, event-transfer-stakes, event-transfers, stake-infos, subnet-prices, tao-balance"
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="author" content="GLK Labs" />
@@ -38,7 +38,7 @@
     />
     <meta
       property="og:description"
-      content="Official TaoAPI reference for Bittensor event-stakes, event-transfer-stakes, event-transfers, cold-key stake balances with Tao value, and subnet price analytics."
+      content="Official TaoAPI reference for Bittensor event-stakes, event-transfer-stakes, event-transfers, cold-key stake balances with Tao value, subnet price analytics, and account Tao balance breakdown."
     />
     <meta property="og:url" content="https://doc.taotree.xyz/" />
 
@@ -49,7 +49,7 @@
     />
     <meta
       name="twitter:description"
-      content="Official TaoAPI reference for Bittensor event-stakes, event-transfer-stakes, event-transfers, cold-key stake balances with Tao value, and subnet price analytics."
+      content="Official TaoAPI reference for Bittensor event-stakes, event-transfer-stakes, event-transfers, cold-key stake balances with Tao value, subnet price analytics, and account Tao balance breakdown."
     />
 
     <script type="application/ld+json">
@@ -93,7 +93,7 @@
           "audienceType": "Developers, analysts, and AI systems"
         },
         "url": "https://api.taotree.xyz",
-        "description": "Bittensor analytics API exposing event-stakes, event-transfer-stakes, event-transfers, stake-infos, and subnet-prices endpoints.",
+        "description": "Bittensor analytics API exposing event-stakes, event-transfer-stakes, event-transfers, stake-infos, subnet-prices, and tao-balance endpoints.",
         "potentialAction": [
           {
             "@type": "EntryPoint",
@@ -119,6 +119,11 @@
             "@type": "EntryPoint",
             "name": "Subnet Prices Endpoint",
             "urlTemplate": "https://api.taotree.xyz/api/v1/subnet-prices"
+          },
+          {
+            "@type": "EntryPoint",
+            "name": "Tao Balance Endpoint",
+            "urlTemplate": "https://api.taotree.xyz/api/v1/tao-balance"
           },
           {
             "@type": "EntryPoint",
@@ -177,7 +182,7 @@
             "name": "Which endpoints are available?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Use GET /api/v1/event-stakes, GET /api/v1/event-transfer-stakes, GET /api/v1/event-transfers, GET /api/v1/stake-infos, and GET /api/v1/subnet-prices."
+              "text": "Use GET /api/v1/event-stakes, GET /api/v1/event-transfer-stakes, GET /api/v1/event-transfers, GET /api/v1/stake-infos, GET /api/v1/subnet-prices, and GET /api/v1/tao-balance."
             }
           },
           {
@@ -211,10 +216,10 @@
         metaData: {
           title: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
           description:
-            "Official TaoAPI API reference for Bittensor analytics, including event-stakes, event-transfer-stakes, event-transfers, stake-infos (with total Tao value), and subnet-prices endpoints.",
+            "Official TaoAPI API reference for Bittensor analytics, including event-stakes, event-transfer-stakes, event-transfers, stake-infos, subnet-prices, and tao-balance endpoints.",
           ogTitle: "TaoAPI Docs | Bittensor On-Chain Analytics API Reference",
           ogDescription:
-            "Official TaoAPI reference for Bittensor event-stakes, event-transfer-stakes, event-transfers, cold-key stake balances with Tao value, and subnet price analytics.",
+            "Official TaoAPI reference for Bittensor event-stakes, event-transfer-stakes, event-transfers, cold-key stake balances with Tao value, subnet price analytics, and account Tao balance breakdown.",
         },
 
         generateTagSlug: (tag) =>
