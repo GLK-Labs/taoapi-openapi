@@ -818,11 +818,11 @@ paths:
       - stake-info
   /api/v1/subnet-prices:
     get:
-      description: Returns current subnet prices in alpha/Tao. You can pass `netuid`
-        as repeated query params (e.g. `?netuid=1&netuid=81`); if `netuid` is omitted,
-        all available subnet prices are returned. `block` is reserved for future historical
-        lookup and is currently unsupported. Returned price values are decimal strings
-        scaled by 1e9 (shift -9).
+      description: Returns current subnet prices in alpha price in TAO (TAO per alpha).
+        You can pass `netuid` as repeated query params (e.g. `?netuid=1&netuid=81`);
+        if `netuid` is omitted, all available subnet prices are returned. `block`
+        is reserved for future historical lookup and is currently unsupported. Returned
+        price values are decimal strings scaled by 1e9 (shift -9).
       operationId: getSubnetPricesV1
       parameters:
       - description: Optional. Subnet identifiers. Supports repeated query params.
@@ -847,7 +847,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/handler.SubnetPriceQueryAPIResponse'
-          description: Successfully returns current subnet prices (alpha/Tao).
+          description: Successfully returns current subnet prices (alpha price in
+            TAO, TAO per alpha).
         "400":
           content:
             application/json:
@@ -893,7 +894,8 @@ paths:
         in Tao units (scaled by 1e-9). `availableBalance` is the on-chain Free balance
         from System.Account. `stakingBalance` is the Tao value of all stake positions
         across subnets, calculated by multiplying each subnet's total stake by its
-        current alpha/Tao price. `totalBalance` = Free + Reserved + stakingBalance.
+        current alpha price in TAO (TAO per alpha). `totalBalance` = Free + Reserved
+        + stakingBalance.
       operationId: getTaoBalanceV1
       parameters:
       - description: Required. Account address in SS58, 0x-prefixed 32-byte hex public
